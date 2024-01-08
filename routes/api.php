@@ -24,11 +24,15 @@ Route::group(['middleware' => 'api'], function ($router) {
         return response()->json(['message'=> 'Route not found', 'status' => 'connected']);
     });
 
+    //Users
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+
+    //Companies
+    Route::resource('companies', CompanyController::class)->except(['create', 'edit']);
 
 });
 

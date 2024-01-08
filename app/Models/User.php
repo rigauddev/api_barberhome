@@ -6,7 +6,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,21 +15,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * Class User
  *
  * @property int $id
- * @property string $name
- * @property string $password
+ * @property string $username
  * @property string $email
- * @property bool $activated
+ * @property string $password
+ * @property string|null $phone
+ * @property int|null $activated
+
+ *
+ * @property Collection|Employee[] $emloyees
+ * @property Collection|Schedule[] $schedules
  *
  * @package App\Models
  */
-class User extends Authenticatable implements JWTSubject
+class User extends  Authenticatable implements JWTSubject
 {
     use Notifiable;
-	protected $table = 'users';
+    protected $table = 'users';
 	public $timestamps = false;
 
 	protected $casts = [
-		'activated' => 'bool'
+		'date_birth' => 'datetime',
+		'activated' => 'int'
 	];
 
 	protected $hidden = [
@@ -37,10 +43,12 @@ class User extends Authenticatable implements JWTSubject
 	];
 
 	protected $fillable = [
-		'name',
-		'password',
+		'username',
 		'email',
-		'activated'
+		'password',
+		'phone',
+		'activated',
+
 	];
 
     //JWT
@@ -53,4 +61,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+	public function emloyees()
+	{
+		return $this->hasMany(Employee::class, 'users_id');
+	}
+
+	public function schedules()
+	{
+		return $this->hasMany(Schedule::class, 'users_id');
+	}
 }
